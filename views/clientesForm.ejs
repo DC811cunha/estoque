@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title><%=titulo%></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body style="text-align: center;">
+
+    <h1 class="card text-white bg-primary">
+        <div class="card-body">
+            <p class="card-text"><%=titulo%></p>
+            <h4 class="card-text">Preencha o formulário abaixo e clique no botão Confirmar para realizar o cadastro</h4>
+        </div>
+    </h1>
+
+    <br><a class="btn btn-secondary" href="/clientes">Voltar</a><br>
+    
+    <div class="container mt-4">
+        <form action="<%=acao%>" method="post">
+            <div class="form-group">
+                <label for="edtCodigo">Código</label>
+                <input value="<%=registro.id_cliente%>" style="text-align: center;" type="text" name="edtCodigo" id="edtCodigo" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label for="edtNome">Nome</label>
+                <input value="<%=registro.nome_cliente%>" style="text-align: center;" type="text" name="edtNome" id="edtNome" class="form-control" placeholder="Inserir nome" required>
+            </div>
+            <div class="form-group">
+                <label for="edtEmail">Email</label>
+                <input value="<%=registro.email_cliente%>" style="text-align: center;" type="email" name="edtEmail" id="edtEmail" class="form-control" placeholder="Inserir email" required>
+            </div>
+            <div class="form-group">
+                <label for="edtTelefone">Telefone</label>
+                <input value="<%=registro.telefone_cliente%>" style="text-align: center;" type="tel" name="edtTelefone" id="edtTelefone" class="form-control" placeholder="Inserir telefone" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Confirmar</button>
+            <button type="reset" class="btn btn-warning">Limpar</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

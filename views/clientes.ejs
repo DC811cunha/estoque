@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title><%=titulo%></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body style="text-align: center;">
+
+    <h1 class="card text-white bg-primary">
+        <div class="card-body">
+            <p class="card-text"><%=titulo%></p>
+            <h4 class="card-text">Clientes já cadastrados no sistema</h4>
+        </div>
+    </h1>
+
+    <div class="mt-3">
+        <a class="btn btn-primary" href="/novoCliente">Novo</a>
+        <a class="btn btn-secondary" href="/principal">Voltar</a>
+    </div>
+
+    <table class="table mt-4">
+        <thead>
+            <tr style="background-color: #ccc;">
+                <th style="width: 15%;">Nome</th>
+                <th style="width: 45%;">E-mail</th>
+                <th style="width: 15%;">Telefone</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (!registros || registros.length == 0) { %>
+            <tr>
+                <td colspan="5" class="text-center">Nenhum cliente cadastrado</td>
+            </tr>
+            <% } else {
+                registros.forEach(function (cliente) { %>
+                <tr>
+                    <td><%= cliente.nome_cliente %></td>
+                    <td><%= cliente.email_cliente %></td>
+                    <td><%= cliente.telefone_cliente %></td>
+                    <td>
+                        <a href="/alterarCliente/<%=cliente.id_cliente%>" class="btn btn-warning btn-sm">Alterar</a>
+                        <a href="/excluirCliente/<%=cliente.id_cliente%>" class="btn btn-danger btn-sm" onclick="return confirm('Deseja excluir?');">Excluir</a>
+                    </td>
+                </tr>
+            <% })} %>
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
