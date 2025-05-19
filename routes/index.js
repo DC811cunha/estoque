@@ -98,6 +98,43 @@ router.get('/produtos', async function(req, res, next) {
 
 
 
+// GET produtos para formulário cadastro.
+router.get('/novoProduto', function(req,res,next){
+  if(!global.usuarioCodigo || global.usuarioCodigo <=0)
+  {
+    res.redirect('/');
+  }  
+  res.render('produtosForm', {titulo: "Cadastro Produto", registro: {}, acao: "/gravarNovoProduto"});
+});
+
+
+
+// GET produtos para formulário de alteração.
+router.get('/alterarProduto/:cod', async function(req,res,next){
+  if(!global.usuarioCodigo || global.usuarioCodigo <=0)
+  {
+    res.redirect('/');
+  }
+  const codigo = parseInt(req.params.cod);
+  const registro = await global.db.selecionarProduto(codigo);
+  res.render('produtosForm', {titulo: "Alteração Produto", registro, acao: "/gravarAlteracaoProduto"});
+});
+
+
+
+// GET produtos para excluir.
+router.get('/excluirProduto/:cod', async function (req,res,next) {
+  if(!global.usuarioCodigo || global.usuarioCodigo <=0)
+  {
+    res.redirect('/');
+  }
+  const codigo = parseInt(req.params.cod);
+  await global.db.apagarProduto(codigo);
+  res.redirect('/produtos');
+});
+
+
+
 //---------------------------POST'S
 
 
@@ -149,6 +186,39 @@ router.post('/gravarAlteracaoCliente', async function(req,res,next){
   const telefone = req.body.edtTelefone;
   await global.db.alterarCliente({codigo, nome, email, telefone});
   res.redirect('/clientes');
+});
+
+
+
+// POST gravar novo produto.
+router.post('/gravarNovoProduto', async function(req,res,next){
+  if(!global.usuarioCodigo || global.usuarioCodigo <=0)
+  {
+    res.redirect('/');
+  }
+  const nome = req.body.edtNome;
+  const descricao = req.body.edtDescricao;
+  const preco = req.body.edtPreco;
+  const estoque = req.body.edtEstoque
+  await global.db.inserirProduto({nome, descricao, preco, estoque});
+  res.redirect('/produtos');
+  });
+
+
+
+// POST gravar alteração produto.
+router.post('/gravarAlteracaoProduto', async function(req,res,next){
+  if(!global.usuarioCodigo || global.usuarioCodigo <=0)
+  {
+    res.redirect('/');
+  }
+  const codigo = parseInt(req.body.edtCodigo);
+  const nome = req.body.edtNome;
+  const descricao = req.body.edtDescricao;
+  const preco = req.body.edtPreco;
+  const estoque = req.body.edtEstoque
+  await global.db.alterarProduto({codigo, nome, descricao, preco, estoque});
+  res.redirect('/produtos');
 });
 
 

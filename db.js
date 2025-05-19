@@ -107,6 +107,49 @@ async function buscarProdutos()
 
 
 
+//---------------------------Funcao para inserir produto BD
+async function inserirProduto(novoProduto) 
+{
+    const con = await conectarBD();
+    const sql = "insert into produtos (nome_produto, descricao_produto, preco_produto, estoque_produto) values (?,?,?,?);";
+    await con.query(sql, [novoProduto.nome, novoProduto.descricao, novoProduto.preco, novoProduto.estoque]);
+}
+
+
+
+//---------------------------Funcao para selecionar registro do produto
+async function selecionarProduto(codigo) 
+{
+    const con = await conectarBD();
+    const sql = "select *from produtos where id_produto=?;";
+    const [registro] = await con.query(sql, [codigo]);
+    return registro && registro.length>0 ? registro[0] : {};
+}
+
+
+
+//---------------------------Funcao para alterar registro do produto
+async function alterarProduto(produto) 
+{
+    const con = await conectarBD();
+    const sql = "update produtos set nome_produto=?, descricao_produto=?, preco_produto=?, estoque_produto=? where id_produto=?;";
+    await con.query(sql, [produto.nome, produto.descricao, produto.preco, produto.estoque, produto.codigo]);
+    return;
+}
+
+
+
+//---------------------------Funcao para apagar registro do produto
+async function apagarProduto(codigo) 
+{
+    const con = await conectarBD();
+    const sql = "delete from produtos where id_produto=?;";
+    await con.query(sql, [codigo]);
+    return;
+}
+
+
+
 conectarBD();
 
 
@@ -118,5 +161,9 @@ module.exports = {
     selecionarCliente,
     alterarCliente,
     apagarCliente,
-    buscarProdutos
+    buscarProdutos,
+    inserirProduto,
+    selecionarProduto,
+    alterarProduto,
+    apagarProduto
 }
