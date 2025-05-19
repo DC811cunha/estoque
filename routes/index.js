@@ -86,6 +86,18 @@ router.get('/excluirCliente/:cod', async function (req,res,next) {
 
 
 
+// GET produtos.
+router.get('/produtos', async function(req, res, next) {
+  if(!global.usuarioCodigo || global.usuarioCodigo <=0)
+  {
+    res.redirect('/');
+  }  
+  const registros = await global.db.buscarProdutos();
+  res.render('produtos', {titulo: "Produtos", registros});
+});
+
+
+
 //---------------------------POST'S
 
 

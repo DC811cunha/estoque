@@ -97,6 +97,16 @@ async function apagarCliente(codigo)
 
 
 
+//---------------------------Funcao para buscar registros dos produtos
+async function buscarProdutos()
+{
+    const con = await conectarBD();
+    const [registros] = await con.query('select *from produtos order by id_produto;');
+    return registros;
+}
+
+
+
 conectarBD();
 
 
@@ -107,5 +117,6 @@ module.exports = {
     inserirCliente,
     selecionarCliente,
     alterarCliente,
-    apagarCliente
+    apagarCliente,
+    buscarProdutos
 }
