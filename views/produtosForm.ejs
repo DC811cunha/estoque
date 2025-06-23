@@ -1,53 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
-    <title><%= titulo %></title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <meta charset="utf-8">
+  <title><%= titulo %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    rel="stylesheet">
 </head>
 
-<body style="text-align: center;">
+<body class="text-center">
+  <div class="container mt-4">
+
+    <!-- Flash messages -->
+    <% if (error_msg && error_msg.length) { %>
+    <% error_msg.forEach(m=>{ %>
+        <div class="alert alert-danger text-left"><%= m %></div>
+    <% }) %>
+    <% } %>
+    <% if (success_msg && success_msg.length) { %>
+    <% success_msg.forEach(m=>{ %>
+        <div class="alert alert-success text-left"><%= m %></div>
+    <% }) %>
+    <% } %>
 
     <h1 class="card text-white bg-primary">
-        <div class="card-body">
-            <p class="card-text"><%= titulo %></p>
-            <h4 class="card-text">Preencha o formulário abaixo e clique em Confirmar</h4>
-        </div>
+      <div class="card-body">
+        <p class="card-text"><%= titulo %></p>
+        <h4 class="card-text">Preencha o formulário abaixo e clique em Confirmar</h4>
+      </div>
     </h1>
 
-    <br><a class="btn btn-secondary" href="/produtos">Voltar</a><br>
+    <a class="btn btn-secondary mt-3 mb-3" href="/produtos">Voltar</a>
 
-    <div class="container mt-4">
-        <form action="<%= acao %>" method="post">
-            <div class="form-group">
-                <label for="edtCodigo">Código</label>
-                <input value="<%= registro.id_produto %>" type="text" name="edtCodigo" id="edtCodigo" class="form-control text-center" readonly>
-            </div>
-            <div class="form-group">
-                <label for="edtNome">Nome</label>
-                <input value="<%= registro.nome_produto %>" type="text" name="edtNome" id="edtNome" class="form-control text-center" placeholder="Nome do produto" required>
-            </div>
-            <div class="form-group">
-                <label for="edtDescricao">Descrição</label>
-                <input value="<%= registro.descricao_produto %>" type="text" name="edtDescricao" id="edtDescricao" class="form-control text-center" placeholder="Descrição do produto" required>
-            </div>
-            <div class="form-group">
-                <label for="edtPreco">Preço (ex: 10.99)</label>
-                <input value="<%= registro.preco_produto %>" type="number" step="0.01" name="edtPreco" id="edtPreco" class="form-control text-center" placeholder="Preço" required>
-            </div>
-            <div class="form-group">
-                <label for="edtEstoque">Estoque</label>
-                <input value="<%= registro.estoque_produto %>" type="number" name="edtEstoque" id="edtEstoque" class="form-control text-center" placeholder="Quantidade em estoque" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Confirmar</button>
-            <button type="reset" class="btn btn-warning">Limpar</button>
-        </form>
-    </div>
+    <form action="<%= acao %>" method="post" novalidate>
+      <!-- Código (readonly) -->
+      <div class="form-group">
+        <label for="edtCodigo">Código</label>
+        <input
+          type="text"
+          id="edtCodigo"
+          name="edtCodigo"
+          class="form-control text-center"
+          value="<%= registro.id_produto || '' %>"
+          readonly>
+      </div>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      <!-- Nome -->
+      <% const errNome = (errors||[]).find(e => e.param==='edtNome') %>
+      <div class="form-group">
+        <label for="edtNome">Nome</label>
+        <input
+          type="text"
+          id="edtNome"
+          name="edtNome"
+          placeholder="Nome do produto"
+          class="form-control text-center <%= errNome ? 'is-invalid' : '' %>"
+          value="<%= registro.nome_produto || '' %>">
+        <% if (errNome) { %>
+          <div class="invalid-feedback text-left"><%= errNome.msg %></div>
+        <% } %>
+      </div>
+
+      <!-- Descrição -->
+      <% const errDesc = (errors||[]).find(e => e.param==='edtDescricao') %>
+      <div class="form-group">
+        <label for="edtDescricao">Descrição</label>
+        <input
+          type="text"
+          id="edtDescricao"
+          name="edtDescricao"
+          placeholder="Descrição do produto"
+          class="form-control text-center <%= errDesc ? 'is-invalid' : '' %>"
+          value="<%= registro.descricao_produto || '' %>">
+        <% if (errDesc) { %>
+          <div class="invalid-feedback text-left"><%= errDesc.msg %></div>
+        <% } %>
+      </div>
+
+      <!-- Preço -->
+      <% const errPreco = (errors||[]).find(e => e.param==='edtPreco') %>
+      <div class="form-group">
+        <label for="edtPreco">Preço (ex: 10,99)</label>
+        <input
+          type="number"
+          step="0.01"
+          id="edtPreco"
+          name="edtPreco"
+          placeholder="Preço"
+          class="form-control text-center <%= errPreco ? 'is-invalid' : '' %>"
+          value="<%= registro.preco_produto != null ? registro.preco_produto.toFixed(2).replace('.', ',') : '' %>">
+        <% if (errPreco) { %>
+          <div class="invalid-feedback text-left"><%= errPreco.msg %></div>
+        <% } %>
+      </div>
+
+      <!-- Estoque -->
+      <% const errEst = (errors||[]).find(e => e.param==='edtEstoque') %>
+      <div class="form-group">
+        <label for="edtEstoque">Estoque</label>
+        <input
+          type="number"
+          id="edtEstoque"
+          name="edtEstoque"
+          placeholder="Quantidade em estoque"
+          class="form-control text-center <%= errEst ? 'is-invalid' : '' %>"
+          value="<%= registro.estoque_produto != null ? registro.estoque_produto : '' %>">
+        <% if (errEst) { %>
+          <div class="invalid-feedback text-left"><%= errEst.msg %></div>
+        <% } %>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Confirmar</button>
+      <button type="reset" class="btn btn-warning">Limpar</button>
+    </form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

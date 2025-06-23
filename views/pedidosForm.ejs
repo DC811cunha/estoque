@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title><%= titulo %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    rel="stylesheet">
+</head>
+<body class="text-center">
+
+  <div class="container mt-4">
+
+    <!-- Flash messages -->
+    <% if (error_msg && error_msg.length) { %>
+      <% error_msg.forEach(msg => { %>
+        <div class="alert alert-danger text-left"><%= msg %></div>
+      <% }) %>
+    <% } %>
+    <% if (success_msg && success_msg.length) { %>
+      <% success_msg.forEach(msg => { %>
+        <div class="alert alert-success text-left"><%= msg %></div>
+      <% }) %>
+    <% } %>
+
+    <h1 class="card text-white bg-primary">
+      <div class="card-body">
+        <p class="card-text"><%= titulo %></p>
+        <h4 class="card-text">Preencha os dados do pedido</h4>
+      </div>
+    </h1>
+
+    <a class="btn btn-secondary mt-3 mb-3" href="/pedidos">Voltar</a>
+
+<form action="<%= acao %>" method="post" novalidate>
+  <!-- Escondido: transporta o id_pedido no POST -->
+  <input type="hidden" name="edtCodigo" value="<%= registro.id_pedido || '' %>">
+
+      <!-- Quantidade -->
+      <% const errQty = (errors||[]).find(e=>e.param==='edtQuantidade') %>
+      <div class="form-group">
+        <label for="edtQuantidade">Quantidade</label>
+        <input
+          type="number"
+          id="edtQuantidade"
+          name="edtQuantidade"
+          class="form-control text-center <%= errQty?'is-invalid':'' %>"
+          min="1"
+          value="<%= registro.quantidade_pedido || '' %>"
+          placeholder="Digite a quantidade">
+        <% if (errQty) { %>
+          <div class="invalid-feedback text-left"><%= errQty.msg %></div>
+        <% } %>
+      </div>
+
+      <!-- Data do Pedido -->
+      <% const errData = (errors||[]).find(e=>e.param==='edtData') %>
+      <div class="form-group">
+        <label for="edtData">Data do Pedido</label>
+        <input
+          type="datetime-local"
+          id="edtData"
+          name="edtData"
+          class="form-control text-center <%= errData?'is-invalid':'' %>"
+          value="<%= registro.data_pedido ? new Date(registro.data_pedido).toISOString().slice(0,16) : '' %>">
+        <% if (errData) { %>
+          <div class="invalid-feedback text-left"><%= errData.msg %></div>
+        <% } %>
+      </div>
+
+      <!-- Cliente -->
+      <% const errCliente = (errors||[]).find(e=>e.param==='edtCliente') %>
+      <div class="form-group">
+        <label for="edtCliente">Cliente</label>
+        <input
+          list="clientesList"
+          id="edtCliente"
+          name="edtCliente"
+          class="form-control text-center <%= errCliente?'is-invalid':'' %>"
+          placeholder="Comece a digitar o nome"
+          value="<%= registro.cliente_id ? registro.cliente_id + ' - ' + registro.nome_cliente : '' %>">
+        <% if (errCliente) { %>
+          <div class="invalid-feedback text-left"><%= errCliente.msg %></div>
+        <% } %>
+        <datalist id="clientesList">
+          <% clientes.forEach(c=>{ %>
+            <option value="<%= c.id_cliente %> - <%= c.nome_cliente %>"></option>
+          <% }) %>
+        </datalist>
+      </div>
+
+      <!-- Produto -->
+      <% const errProduto = (errors||[]).find(e=>e.param==='edtProduto') %>
+      <div class="form-group">
+        <label for="edtProduto">Produto</label>
+        <input
+          list="produtosList"
+          id="edtProduto"
+          name="edtProduto"
+          class="form-control text-center <%= errProduto?'is-invalid':'' %>"
+          placeholder="Comece a digitar o nome"
+          value="<%= registro.produto_id ? registro.produto_id + ' - ' + registro.nome_produto : '' %>">
+        <% if (errProduto) { %>
+          <div class="invalid-feedback text-left"><%= errProduto.msg %></div>
+        <% } %>
+        <datalist id="produtosList">
+          <% produtos.forEach(p=>{ %>
+            <option value="<%= p.id_produto %> - <%= p.nome_produto %>"></option>
+          <% }) %>
+        </datalist>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Confirmar</button>
+      <button type="reset" class="btn btn-warning">Limpar</button>
+    </form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
