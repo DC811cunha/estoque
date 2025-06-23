@@ -316,6 +316,48 @@ async function alterarPedido({ id, quantidade, data, cliente, produto }) {
 }
 
 // Métodos de validação para exclusões.
+async function apagarPedido(idPedido) {
+  const con = await conectarBD()
+  try {
+    await con.beginTransaction()
+
+    // 1) Bloqueia o pedido e lê produto + quantidade
+    const [rows] = await con.execute(
+      `SELECT produto_id AS produto, quantidade_pedido AS quantidade
+         FROM pedidos
+        WHERE id_pedido = ?
+        FOR UPDATE;`,
+      [idPedido]
+    )
+    if (rows.length === 0) {
+      throw new Error(`Pedido #${idPedido} não encontrado`)
+    }
+    const { produto, quantidade } = rows[0]
+
+    // 2) Remove o pedido
+    await con.execute(
+      `DELETE FROM pedidos
+        WHERE id_pedido = ?;`,
+      [idPedido]
+    )
+
+    // 3) Devolve a quantidade ao estoque
+    await con.execute(
+      `UPDATE produtos
+         SET estoque_produto = estoque_produto + ?
+       WHERE id_produto     = ?;`,
+      [quantidade, produto]
+    )
+
+    await con.commit()
+  } catch (err) {
+    await con.rollback()
+    console.error('ERRO apagarPedido:', err)
+    // relância a mensagem para a camada de rota
+    throw err
+  }
+}
+
 // conta quantos pedidos existem para um dado cliente
 async function contarPedidosPorCliente(idCliente) {
   const con = await conectarBD();
@@ -354,6 +396,7 @@ module.exports = {
   inserirPedido,
   selecionarPedido,
   alterarPedido,
+  apagarPedido,
   contarPedidosPorCliente,
   contarPedidosPorProduto
 }

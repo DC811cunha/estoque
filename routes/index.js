@@ -400,4 +400,17 @@ router.post('/gravarAlteracaoPedido', autenticar, async (req, res) => {
   }
 })
 
+// Excluir pedido (devolve estoque)
+router.get('/excluirPedido/:id', autenticar, async (req, res) => {
+  const id = parseInt(req.params.id, 10)
+  try {
+    await global.db.apagarPedido(id)
+    req.flash('success_msg', `Pedido #${id} excluído e estoque restituído com sucesso!`)
+  } catch (err) {
+    // Se quiser tratar erro especial, poderia inspecionar código SQL, mas em geral:
+    req.flash('error_msg', `Não foi possível excluir pedido #${id}. Motivo: ${err.message}`)
+  }
+  res.redirect('/pedidos')
+})
+
 module.exports = router
